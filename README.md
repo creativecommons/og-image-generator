@@ -67,4 +67,4 @@ Once you have an image generator that sparks joy, you can setup [automatic GitHu
 
 ## Credits
 
-This is based on the lovely [Open Graph Image Generator](https://github.com/vercel/og-image) created by [Vercel](https:/vercel.com). They
+This is a fork of the lovely [Open Graph Image Generator](https://github.com/vercel/og-image) created by [Vercel](https:/vercel.com). Special thanks to their clearly-written and reuse-friendly repository!
