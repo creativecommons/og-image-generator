@@ -1,12 +1,20 @@
 {
-  "private": true,
-  "engines": {
-    "node": "12.x"
+  "name": "og-image-generator",
+  "description": "An open graph image generator for Creative Commons projects",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creativecommons/og-image-generator.git"
   },
+  "bugs": {
+    "url": "https://github.com/creativecommons/og-image-generator/issues"
+  },
+  "author": "zackkrida",
   "scripts": {
     "build": "tsc -p api/tsconfig.json && tsc -p web/tsconfig.json"
   },
+  "private": true,
   "dependencies": {
+    "@creativecommons/vocabulary": "^2020.8.6",
     "chrome-aws-lambda": "2.1.1",
     "marked": "0.8.2",
     "puppeteer-core": "2.1.1",
@@ -17,5 +25,11 @@
     "@types/puppeteer": "2.0.1",
     "@types/puppeteer-core": "2.0.0",
     "typescript": "3.8.3"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "volta": {
+    "node": "12.18.4"
   }
 }
