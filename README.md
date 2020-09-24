@@ -1,3 +1,5 @@
+## _Warning: This software is in early beta and should not be used in production yet._
+
 # Open Graph Image Generator
 
 Serverless service that generates dynamic Open Graph images that you can embed in your `<meta>` tags.
@@ -17,7 +19,10 @@ It looks like the following:
 ```html
 <head>
   <title>Title</title>
-  <meta property="og:image" content="http://example.com/logo.jpg" />
+  <meta
+    property="og:image"
+    content="https://cc-og-image.vercel.app/Hello%20World.png"
+  />
 </head>
 ```
 
