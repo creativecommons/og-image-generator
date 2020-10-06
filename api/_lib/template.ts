@@ -50,6 +50,10 @@ function getCss(theme: string, fontSize: string) {
         margin: 0 75px;
     }
 
+    .dark-svg {
+        filter: invert(100%) sepia(0%) saturate(100%) hue-rotate(12deg) brightness(0) contrast(103%);
+    }
+
     .plus {
         color: #BBB;
         font-family: Times New Roman, Verdana;
@@ -91,7 +95,7 @@ export function getHtml(parsedReq: ParsedRequest) {
             <div class="spacer">
             <div class="logo-wrapper">
                 ${images
-                  .map((img, i) => getPlusSign(i) + getImage(img, widths[i], heights[i]))
+                  .map((img, i) => getPlusSign(i) + getImage(img, theme, widths[i], heights[i]))
                   .join("")}
             </div>
             <div class="spacer">
@@ -102,9 +106,9 @@ export function getHtml(parsedReq: ParsedRequest) {
 </html>`;
 }
 
-function getImage(src: string, width = "auto", height = "225") {
+function getImage(src: string, theme: string, width = "auto", height = "225") {
   return `<img
-        class="logo"
+        class=${theme === 'dark' ? "logo dark-svg" : "logo"}
         alt="Generated Image"
         src="${sanitizeHtml(src)}"
         width="${sanitizeHtml(width)}"

@@ -183,49 +183,49 @@ const imageLightOptions: DropdownOption[] = [
   },
 ];
 
-const imageDarkOptions: DropdownOption[] = [
-  {
-    text: "main lettermark",
-    value: "https://cc-vocabulary.netlify.app/logos/cc/lettermark.svg#lettermark",
-  },
-  {
-    text: "certificates",
-    value: "https://cc-vocabulary.netlify.app/logos/products/certificates.svg#certificates",
-  },
-  {
-    text: "chooser",
-    value: "https://cc-vocabulary.netlify.app/logos/products/chooser.svg#chooser",
-  },
-  {
-    text: "globalnetwork",
-    value: "https://cc-vocabulary.netlify.app/logos/products/global_network.svg#globalnetwork",
-  },
-  {
-    text: "globalsummit",
-    value: "https://cc-vocabulary.netlify.app/logos/products/global_summit.svg#globalsummit",
-  },
-  {
-    text: "legaldatabase",
-    value: "https://cc-vocabulary.netlify.app/logos/products/legal_database.svg#legaldatabase",
-  },
-  {
-    text: "opensource",
-    value: "https://cc-vocabulary.netlify.app/logos/products/open_source.svg#opensource",
-  },
-  {
-    text: "search",
-    value: "https://cc-vocabulary.netlify.app/logos/products/search.svg#search",
-  },
-  {
-    text: "stateofthecommons",
-    value:
-      "https://cc-vocabulary.netlify.app/logos/products/state_of_the_commons.svg#stateofthecommons",
-  },
-  {
-    text: "vocabulary",
-    value: "https://cc-vocabulary.netlify.app/logos/products/vocabulary.svg#vocabulary",
-  },
-];
+// const imageDarkOptions: DropdownOption[] = [
+//   {
+//     text: "main lettermark",
+//     value: "https://cc-vocabulary.netlify.app/logos/cc/lettermark.svg#lettermark",
+//   },
+//   {
+//     text: "certificates",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/certificates.svg#certificates",
+//   },
+//   {
+//     text: "chooser",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/chooser.svg#chooser",
+//   },
+//   {
+//     text: "globalnetwork",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/global_network.svg#globalnetwork",
+//   },
+//   {
+//     text: "globalsummit",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/global_summit.svg#globalsummit",
+//   },
+//   {
+//     text: "legaldatabase",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/legal_database.svg#legaldatabase",
+//   },
+//   {
+//     text: "opensource",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/open_source.svg#opensource",
+//   },
+//   {
+//     text: "search",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/search.svg#search",
+//   },
+//   {
+//     text: "stateofthecommons",
+//     value:
+//       "https://cc-vocabulary.netlify.app/logos/products/state_of_the_commons.svg#stateofthecommons",
+//   },
+//   {
+//     text: "vocabulary",
+//     value: "https://cc-vocabulary.netlify.app/logos/products/vocabulary.svg#vocabulary",
+//   },
+// ];
 
 const widthOptions = [
   { text: "width", value: "auto" },
@@ -290,7 +290,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   } = state;
 
   const mdValue = md ? "1" : "0";
-  const imageOptions = theme === "light" ? imageLightOptions : imageDarkOptions;
+  const imageOptions = imageLightOptions;
   const url = new URL(window.location.origin);
   url.pathname = `${encodeURIComponent(text)}.${fileType}`;
   url.searchParams.append("theme", theme);
@@ -321,7 +321,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
             options: themeOptions,
             value: theme,
             onchange: (val: Theme) => {
-              const options = val === "light" ? imageLightOptions : imageDarkOptions;
+              const options = imageLightOptions;
               let clone = [...images];
               clone[0] = options[selectedImageIndex].value;
               setLoadingState({ theme: val, images: clone });
