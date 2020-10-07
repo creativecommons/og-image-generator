@@ -1,335 +1,316 @@
-import { ParsedRequest, Theme, FileType } from "../api/_lib/types";
-const { H, R, copee } = window as any;
-let timeout = -1;
+import { ParsedRequest, Theme, FileType } from '../api/_lib/types'
+const { H, R, copee } = window as any
+let timeout = -1
 
 interface ImagePreviewProps {
-  src: string;
-  onclick: () => void;
-  onload: () => void;
-  onerror: () => void;
-  loading: boolean;
+  src: string
+  onclick: () => void
+  onload: () => void
+  onerror: () => void
+  loading: boolean
 }
 
-const ImagePreview = ({ src, onclick, onload, onerror, loading }: ImagePreviewProps) => {
+const ImagePreview = ({
+  src,
+  onclick,
+  onload,
+  onerror,
+  loading,
+}: ImagePreviewProps) => {
   const style = {
-    filter: loading ? "blur(5px)" : "",
+    filter: loading ? 'blur(5px)' : '',
     opacity: loading ? 0.1 : 1,
-  };
-  const title = "Click to copy image URL to clipboard";
+  }
+  const title = 'Click to copy image URL to clipboard'
   return H(
-    "a",
-    { className: "image-wrapper", href: src, onclick },
-    H("img", { src, onload, onerror, style, title })
-  );
-};
+    'a',
+    { className: 'image-wrapper', href: src, onclick },
+    H('img', { src, onload, onerror, style, title })
+  )
+}
 
 interface DropdownOption {
-  text: string;
-  value: string;
+  text: string
+  value: string
 }
 
 interface DropdownProps {
-  options: DropdownOption[];
-  value: string;
-  onchange: (val: string) => void;
-  small: boolean;
+  options: DropdownOption[]
+  value: string
+  onchange: (val: string) => void
+  small: boolean
 }
 
 const Dropdown = ({ options, value, onchange, small }: DropdownProps) => {
-  const wrapper = small ? "select-wrapper small" : "select-wrapper";
-  const arrow = small ? "select-arrow small" : "select-arrow";
+  const wrapper = small ? 'select-wrapper small' : 'select-wrapper'
+  const arrow = small ? 'select-arrow small' : 'select-arrow'
   return H(
-    "div",
+    'div',
     { className: wrapper },
     H(
-      "select",
+      'select',
       { onchange: (e: any) => onchange(e.target.value) },
-      options.map((o) => H("option", { value: o.value, selected: value === o.value }, o.text))
+      options.map((o) =>
+        H('option', { value: o.value, selected: value === o.value }, o.text)
+      )
     ),
-    H("div", { className: arrow }, "▼")
-  );
-};
+    H('div', { className: arrow }, '▼')
+  )
+}
 
 interface TextInputProps {
-  value: string;
-  oninput: (val: string) => void;
+  value: string
+  oninput: (val: string) => void
 }
 
 const TextInput = ({ value, oninput }: TextInputProps) => {
   return H(
-    "div",
-    { className: "input-outer-wrapper" },
+    'div',
+    { className: 'input-outer-wrapper' },
     H(
-      "div",
-      { className: "input-inner-wrapper" },
-      H("input", { type: "text", value, oninput: (e: any) => oninput(e.target.value) })
+      'div',
+      { className: 'input-inner-wrapper' },
+      H('input', {
+        type: 'text',
+        value,
+        oninput: (e: any) => oninput(e.target.value),
+      })
     )
-  );
-};
+  )
+}
 
 interface ButtonProps {
-  label: string;
-  onclick: () => void;
+  label: string
+  onclick: () => void
 }
 
 const Button = ({ label, onclick }: ButtonProps) => {
-  return H("button", { onclick }, label);
-};
+  return H('button', { onclick }, label)
+}
 
 interface FieldProps {
-  label: string;
-  input: any;
+  label: string
+  input: any
 }
 
 const Field = ({ label, input }: FieldProps) => {
   return H(
-    "div",
-    { className: "field" },
+    'div',
+    { className: 'field' },
     H(
-      "label",
-      H("div", { className: "custom-label" }, label),
-      H("div", { className: "field-value" }, input)
+      'label',
+      H('div', { className: 'custom-label' }, label),
+      H('div', { className: 'field-value' }, input)
     )
-  );
-};
+  )
+}
 
 interface ToastProps {
-  show: boolean;
-  message: string;
+  show: boolean
+  message: string
 }
 
 const Toast = ({ show, message }: ToastProps) => {
-  const style = { transform: show ? "translate3d(0,-0px,-0px) scale(1)" : "" };
+  const style = { transform: show ? 'translate3d(0,-0px,-0px) scale(1)' : '' }
   return H(
-    "div",
-    { className: "toast-area" },
+    'div',
+    { className: 'toast-area' },
     H(
-      "div",
-      { className: "toast-outer", style },
-      H("div", { className: "toast-inner" }, H("div", { className: "toast-message" }, message))
+      'div',
+      { className: 'toast-outer', style },
+      H(
+        'div',
+        { className: 'toast-inner' },
+        H('div', { className: 'toast-message' }, message)
+      )
     )
-  );
-};
+  )
+}
 
 const themeOptions: DropdownOption[] = [
-  { text: "Light", value: "light" },
-  { text: "Dark", value: "dark" },
-];
+  { text: 'Light', value: 'light' },
+  { text: 'Dark', value: 'dark' },
+]
 
 const fileTypeOptions: DropdownOption[] = [
-  { text: "PNG", value: "png" },
-  { text: "JPEG", value: "jpeg" },
-];
+  { text: 'PNG', value: 'png' },
+  { text: 'JPEG', value: 'jpeg' },
+]
 
 const fontSizeOptions: DropdownOption[] = Array.from({ length: 10 })
   .map((_, i) => i * 25)
   .filter((n) => n > 0)
-  .map((n) => ({ text: n + "px", value: n + "px" }));
+  .map((n) => ({ text: n + 'px', value: n + 'px' }))
 
 const markdownOptions: DropdownOption[] = [
-  { text: "Plain Text", value: "0" },
-  { text: "Markdown", value: "1" },
-];
+  { text: 'Plain Text', value: '0' },
+  { text: 'Markdown', value: '1' },
+]
 
 const imageLightOptions: DropdownOption[] = [
   {
-    text: "main logomark",
-    value: "https://cc-vocabulary.netlify.app/logos/cc/logomark.svg#logomark",
+    text: 'main logomark',
+    value: 'https://cc-vocabulary.netlify.app/logos/cc/logomark.svg#logomark',
   },
   {
-    text: "main lettermark",
-    value: "https://cc-vocabulary.netlify.app/logos/cc/lettermark.svg#lettermark",
-  },
-  {
-    text: "letterheart",
-    value: "https://cc-vocabulary.netlify.app/logos/cc/lettermark.svg#letterheart",
-  },
-  {
-    text: "certificates",
-    value: "https://cc-vocabulary.netlify.app/logos/products/certificates.svg#certificates",
-  },
-  {
-    text: "chooser",
-    value: "https://cc-vocabulary.netlify.app/logos/products/chooser.svg#chooser",
-  },
-  {
-    text: "globalnetwork",
-    value: "https://cc-vocabulary.netlify.app/logos/products/global_network.svg#globalnetwork",
-  },
-  {
-    text: "globalsummit",
-    value: "https://cc-vocabulary.netlify.app/logos/products/global_summit.svg#globalsummit",
-  },
-  {
-    text: "legaldatabase",
-    value: "https://cc-vocabulary.netlify.app/logos/products/legal_database.svg#legaldatabase",
-  },
-  {
-    text: "opensource",
-    value: "https://cc-vocabulary.netlify.app/logos/products/open_source.svg#opensource",
-  },
-  {
-    text: "search",
-    value: "https://cc-vocabulary.netlify.app/logos/products/search.svg#search",
-  },
-  {
-    text: "stateofthecommons",
+    text: 'main lettermark',
     value:
-      "https://cc-vocabulary.netlify.app/logos/products/state_of_the_commons.svg#stateofthecommons",
+      'https://cc-vocabulary.netlify.app/logos/cc/lettermark.svg#lettermark',
   },
   {
-    text: "vocabulary",
-    value: "https://cc-vocabulary.netlify.app/logos/products/vocabulary.svg#vocabulary",
+    text: 'letterheart',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/cc/lettermark.svg#letterheart',
   },
-];
-
-// const imageDarkOptions: DropdownOption[] = [
-//   {
-//     text: "main lettermark",
-//     value: "https://cc-vocabulary.netlify.app/logos/cc/lettermark.svg#lettermark",
-//   },
-//   {
-//     text: "certificates",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/certificates.svg#certificates",
-//   },
-//   {
-//     text: "chooser",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/chooser.svg#chooser",
-//   },
-//   {
-//     text: "globalnetwork",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/global_network.svg#globalnetwork",
-//   },
-//   {
-//     text: "globalsummit",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/global_summit.svg#globalsummit",
-//   },
-//   {
-//     text: "legaldatabase",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/legal_database.svg#legaldatabase",
-//   },
-//   {
-//     text: "opensource",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/open_source.svg#opensource",
-//   },
-//   {
-//     text: "search",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/search.svg#search",
-//   },
-//   {
-//     text: "stateofthecommons",
-//     value:
-//       "https://cc-vocabulary.netlify.app/logos/products/state_of_the_commons.svg#stateofthecommons",
-//   },
-//   {
-//     text: "vocabulary",
-//     value: "https://cc-vocabulary.netlify.app/logos/products/vocabulary.svg#vocabulary",
-//   },
-// ];
+  {
+    text: 'certificates',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/certificates.svg#certificates',
+  },
+  {
+    text: 'chooser',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/chooser.svg#chooser',
+  },
+  {
+    text: 'globalnetwork',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/global_network.svg#globalnetwork',
+  },
+  {
+    text: 'globalsummit',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/global_summit.svg#globalsummit',
+  },
+  {
+    text: 'legaldatabase',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/legal_database.svg#legaldatabase',
+  },
+  {
+    text: 'opensource',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/open_source.svg#opensource',
+  },
+  {
+    text: 'search',
+    value: 'https://cc-vocabulary.netlify.app/logos/products/search.svg#search',
+  },
+  {
+    text: 'stateofthecommons',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/state_of_the_commons.svg#stateofthecommons',
+  },
+  {
+    text: 'vocabulary',
+    value:
+      'https://cc-vocabulary.netlify.app/logos/products/vocabulary.svg#vocabulary',
+  },
+]
 
 const widthOptions = [
-  { text: "width", value: "auto" },
-  { text: "50", value: "50" },
-  { text: "100", value: "100" },
-  { text: "150", value: "150" },
-  { text: "200", value: "200" },
-  { text: "250", value: "250" },
-  { text: "300", value: "300" },
-  { text: "350", value: "350" },
-];
+  { text: 'width', value: 'auto' },
+  { text: '50', value: '50' },
+  { text: '100', value: '100' },
+  { text: '150', value: '150' },
+  { text: '200', value: '200' },
+  { text: '250', value: '250' },
+  { text: '300', value: '300' },
+  { text: '350', value: '350' },
+]
 
 const heightOptions = [
-  { text: "height", value: "auto" },
-  { text: "50", value: "50" },
-  { text: "100", value: "100" },
-  { text: "150", value: "150" },
-  { text: "200", value: "200" },
-  { text: "250", value: "250" },
-  { text: "300", value: "300" },
-  { text: "350", value: "350" },
-];
+  { text: 'height', value: 'auto' },
+  { text: '50', value: '50' },
+  { text: '100', value: '100' },
+  { text: '150', value: '150' },
+  { text: '200', value: '200' },
+  { text: '250', value: '250' },
+  { text: '300', value: '300' },
+  { text: '350', value: '350' },
+]
 
 interface AppState extends ParsedRequest {
-  loading: boolean;
-  showToast: boolean;
-  messageToast: string;
-  selectedImageIndex: number;
-  widths: string[];
-  heights: string[];
-  overrideUrl: URL | null;
+  loading: boolean
+  showToast: boolean
+  messageToast: string
+  selectedImageIndex: number
+  widths: string[]
+  heights: string[]
+  overrideUrl: URL | null
 }
 
-type SetState = (state: Partial<AppState>) => void;
+type SetState = (state: Partial<AppState>) => void
 
 const App = (_: any, state: AppState, setState: SetState) => {
   const setLoadingState = (newState: Partial<AppState>) => {
-    window.clearTimeout(timeout);
+    window.clearTimeout(timeout)
     if (state.overrideUrl && state.overrideUrl !== newState.overrideUrl) {
-      newState.overrideUrl = state.overrideUrl;
+      newState.overrideUrl = state.overrideUrl
     }
     if (newState.overrideUrl) {
-      timeout = window.setTimeout(() => setState({ overrideUrl: null }), 200);
+      timeout = window.setTimeout(() => setState({ overrideUrl: null }), 200)
     }
 
-    setState({ ...newState, loading: true });
-  };
+    setState({ ...newState, loading: true })
+  }
   const {
-    fileType = "png",
-    fontSize = "100px",
-    theme = "light",
+    fileType = 'png',
+    fontSize = '100px',
+    theme = 'light',
     md = true,
-    text = "Introducing **New** Feature",
+    text = 'Introducing **New** Feature',
     images = [imageLightOptions[0].value],
     widths = [],
     heights = [],
     showToast = false,
-    messageToast = "",
+    messageToast = '',
     loading = true,
     selectedImageIndex = 0,
     overrideUrl = null,
-  } = state;
+  } = state
 
-  const mdValue = md ? "1" : "0";
-  const imageOptions = imageLightOptions;
-  const url = new URL(window.location.origin);
-  url.pathname = `${encodeURIComponent(text)}.${fileType}`;
-  url.searchParams.append("theme", theme);
-  url.searchParams.append("md", mdValue);
-  url.searchParams.append("fontSize", fontSize);
+  const mdValue = md ? '1' : '0'
+  const imageOptions = imageLightOptions
+  const url = new URL(window.location.origin)
+  url.pathname = `${encodeURIComponent(text)}.${fileType}`
+  url.searchParams.append('theme', theme)
+  url.searchParams.append('md', mdValue)
+  url.searchParams.append('fontSize', fontSize)
 
   for (let image of images) {
-    url.searchParams.append("images", image);
+    url.searchParams.append('images', image)
   }
   for (let width of widths) {
-    url.searchParams.append("widths", width);
+    url.searchParams.append('widths', width)
   }
   for (let height of heights) {
-    url.searchParams.append("heights", height);
+    url.searchParams.append('heights', height)
   }
 
   return H(
-    "div",
-    { className: "columns is-vcentered is-variable is-8" },
+    'div',
+    { className: 'columns is-vcentered is-variable is-8' },
     H(
-      "div",
-      { className: "column is-half margin-top-large margin-bottom-large" },
+      'div',
+      { className: 'column is-half margin-top-large margin-bottom-large' },
       H(
-        "div",
+        'div',
         H(Field, {
-          label: "Theme",
+          label: 'Theme',
           input: H(Dropdown, {
             options: themeOptions,
             value: theme,
             onchange: (val: Theme) => {
-              const options = imageLightOptions;
-              let clone = [...images];
-              clone[0] = options[selectedImageIndex].value;
-              setLoadingState({ theme: val, images: clone });
+              const options = imageLightOptions
+              let clone = [...images]
+              clone[0] = options[selectedImageIndex].value
+              setLoadingState({ theme: val, images: clone })
             },
           }),
         }),
         H(Field, {
-          label: "File Type",
+          label: 'File Type',
           input: H(Dropdown, {
             options: fileTypeOptions,
             value: fileType,
@@ -337,7 +318,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
           }),
         }),
         H(Field, {
-          label: "Font Size",
+          label: 'Font Size',
           input: H(Dropdown, {
             options: fontSizeOptions,
             value: fontSize,
@@ -345,48 +326,48 @@ const App = (_: any, state: AppState, setState: SetState) => {
           }),
         }),
         H(Field, {
-          label: "Text Type",
+          label: 'Text Type',
           input: H(Dropdown, {
             options: markdownOptions,
             value: mdValue,
-            onchange: (val: string) => setLoadingState({ md: val === "1" }),
+            onchange: (val: string) => setLoadingState({ md: val === '1' }),
           }),
         }),
         H(Field, {
-          label: "Text Input",
+          label: 'Text Input',
           input: H(TextInput, {
             value: text,
             oninput: (val: string) => {
-              console.log("oninput " + val);
-              setLoadingState({ text: val, overrideUrl: url });
+              console.log('oninput ' + val)
+              setLoadingState({ text: val, overrideUrl: url })
             },
           }),
         }),
         H(Field, {
-          label: "Image 1",
+          label: 'Image 1',
           input: H(
-            "div",
+            'div',
             H(Dropdown, {
               options: imageOptions,
               value: imageOptions[selectedImageIndex].value,
               onchange: (val: string) => {
-                let clone = [...images];
-                clone[0] = val;
-                const selected = imageOptions.map((o) => o.value).indexOf(val);
-                setLoadingState({ images: clone, selectedImageIndex: selected });
+                let clone = [...images]
+                clone[0] = val
+                const selected = imageOptions.map((o) => o.value).indexOf(val)
+                setLoadingState({ images: clone, selectedImageIndex: selected })
               },
             }),
             H(
-              "div",
-              { className: "field-flex" },
+              'div',
+              { className: 'field-flex' },
               H(Dropdown, {
                 options: widthOptions,
                 value: widths[0],
                 small: true,
                 onchange: (val: string) => {
-                  let clone = [...widths];
-                  clone[0] = val;
-                  setLoadingState({ widths: clone });
+                  let clone = [...widths]
+                  clone[0] = val
+                  setLoadingState({ widths: clone })
                 },
               }),
               H(Dropdown, {
@@ -394,9 +375,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
                 value: heights[0],
                 small: true,
                 onchange: (val: string) => {
-                  let clone = [...heights];
-                  clone[0] = val;
-                  setLoadingState({ heights: clone });
+                  let clone = [...heights]
+                  clone[0] = val
+                  setLoadingState({ heights: clone })
                 },
               })
             )
@@ -406,26 +387,26 @@ const App = (_: any, state: AppState, setState: SetState) => {
           H(Field, {
             label: `Image ${i + 2}`,
             input: H(
-              "div",
+              'div',
               H(TextInput, {
                 value: image,
                 oninput: (val: string) => {
-                  let clone = [...images];
-                  clone[i + 1] = val;
-                  setLoadingState({ images: clone, overrideUrl: url });
+                  let clone = [...images]
+                  clone[i + 1] = val
+                  setLoadingState({ images: clone, overrideUrl: url })
                 },
               }),
               H(
-                "div",
-                { className: "field-flex" },
+                'div',
+                { className: 'field-flex' },
                 H(Dropdown, {
                   options: widthOptions,
                   value: widths[i + 1],
                   small: true,
                   onchange: (val: string) => {
-                    let clone = [...widths];
-                    clone[i + 1] = val;
-                    setLoadingState({ widths: clone });
+                    let clone = [...widths]
+                    clone[i + 1] = val
+                    setLoadingState({ widths: clone })
                   },
                 }),
                 H(Dropdown, {
@@ -433,9 +414,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
                   value: heights[i + 1],
                   small: true,
                   onchange: (val: string) => {
-                    let clone = [...heights];
-                    clone[i + 1] = val;
-                    setLoadingState({ heights: clone });
+                    let clone = [...heights]
+                    clone[i + 1] = val
+                    setLoadingState({ heights: clone })
                   },
                 })
               )
@@ -449,35 +430,38 @@ const App = (_: any, state: AppState, setState: SetState) => {
             onclick: () => {
               const nextImage =
                 images.length === 1
-                  ? "https://cdn.jsdelivr.net/gh/remojansen/logo.ts@master/ts.svg"
-                  : "";
-              setLoadingState({ images: [...images, nextImage] });
+                  ? 'https://cdn.jsdelivr.net/gh/remojansen/logo.ts@master/ts.svg'
+                  : ''
+              setLoadingState({ images: [...images, nextImage] })
             },
           }),
         })
       )
     ),
     H(
-      "div",
-      { className: "column is-half margin-top-large" },
+      'div',
+      { className: 'column is-half margin-top-large' },
       H(ImagePreview, {
         src: overrideUrl ? overrideUrl.href : url.href,
         loading: loading,
         onload: () => setState({ loading: false }),
         onerror: () => {
-          setState({ showToast: true, messageToast: "Oops, an error occurred" });
-          setTimeout(() => setState({ showToast: false }), 2000);
+          setState({ showToast: true, messageToast: 'Oops, an error occurred' })
+          setTimeout(() => setState({ showToast: false }), 2000)
         },
         onclick: (e: Event) => {
-          e.preventDefault();
-          const success = copee.toClipboard(url.href);
+          e.preventDefault()
+          const success = copee.toClipboard(url.href)
           if (success) {
-            setState({ showToast: true, messageToast: "Copied image URL to clipboard" });
-            setTimeout(() => setState({ showToast: false }), 3000);
+            setState({
+              showToast: true,
+              messageToast: 'Copied image URL to clipboard',
+            })
+            setTimeout(() => setState({ showToast: false }), 3000)
           } else {
-            window.open(url.href, "_blank");
+            window.open(url.href, '_blank')
           }
-          return false;
+          return false
         },
       })
     ),
@@ -485,7 +469,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
       message: messageToast,
       show: showToast,
     })
-  );
-};
+  )
+}
 
-R(H(App), document.getElementById("app"));
+R(H(App), document.getElementById('app'))
