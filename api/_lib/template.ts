@@ -1,19 +1,19 @@
-import marked from "marked";
-import { sanitizeHtml } from "./sanitizer";
-import { ParsedRequest } from "./types";
-const twemoji = require("twemoji");
-const twOptions = { folder: "svg", ext: ".svg" };
-const emojify = (text: string) => twemoji.parse(text, twOptions);
+import marked from 'marked'
+import { sanitizeHtml } from './sanitizer'
+import { ParsedRequest } from './types'
+const twemoji = require('twemoji')
+const twOptions = { folder: 'svg', ext: '.svg' }
+const emojify = (text: string) => twemoji.parse(text, twOptions)
 
 function getCss(theme: string, fontSize: string) {
-  let background = "white";
-  let foreground = "black";
-  let radial = "lightgray";
+  let background = 'white'
+  let foreground = 'black'
+  let radial = 'lightgray'
 
-  if (theme === "dark") {
-    background = "black";
-    foreground = "white";
-    radial = "dimgray";
+  if (theme === 'dark') {
+    background = 'black'
+    foreground = 'white'
+    radial = 'dimgray'
   }
   return `
     body {
@@ -50,6 +50,10 @@ function getCss(theme: string, fontSize: string) {
         margin: 0 75px;
     }
 
+    .dark-svg {
+        filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(12deg) brightness(103%) contrast(103%);
+    }
+
     .plus {
         color: #BBB;
         font-family: Times New Roman, Verdana;
@@ -73,11 +77,11 @@ function getCss(theme: string, fontSize: string) {
         font-style: normal;
         color: ${foreground};
         line-height: 1.8;
-    }`;
+    }`
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { text, theme, md, fontSize, images, widths, heights } = parsedReq;
+  const { text, theme, md, fontSize, images, widths, heights } = parsedReq
   return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
@@ -91,27 +95,33 @@ export function getHtml(parsedReq: ParsedRequest) {
             <div class="spacer">
             <div class="logo-wrapper">
                 ${images
-                  .map((img, i) => getPlusSign(i) + getImage(img, widths[i], heights[i]))
-                  .join("")}
+                  .map(
+                    (img, i) =>
+                      getPlusSign(i) +
+                      getImage(img, theme, widths[i], heights[i])
+                  )
+                  .join('')}
             </div>
             <div class="spacer">
-            <div class="heading">${emojify(md ? marked(text) : sanitizeHtml(text))}
+            <div class="heading">${emojify(
+              md ? marked(text) : sanitizeHtml(text)
+            )}
             </div>
         </div>
     </body>
-</html>`;
+</html>`
 }
 
-function getImage(src: string, width = "auto", height = "225") {
+function getImage(src: string, theme: string, width = 'auto', height = '225') {
   return `<img
-        class="logo"
+        class="logo ${theme === 'dark' ? 'dark-svg' : ''}"
         alt="Generated Image"
         src="${sanitizeHtml(src)}"
         width="${sanitizeHtml(width)}"
         height="${sanitizeHtml(height)}"
-    />`;
+    />`
 }
 
 function getPlusSign(i: number) {
-  return i === 0 ? "" : '<div class="plus">+</div>';
+  return i === 0 ? '' : '<div class="plus">+</div>'
 }
