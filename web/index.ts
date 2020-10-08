@@ -88,6 +88,28 @@ const Button = ({ label, onclick }: ButtonProps) => {
   return H('button', { onclick }, label)
 }
 
+interface ActionsProps {
+  href: string
+  copyImage: () => void
+  copyMetaTag: () => void
+}
+
+const ActionButtons = ({ href, copyImage, copyMetaTag }: ActionsProps) => {
+  return H(
+    'div',
+    { className: 'action-buttons' },
+    H(Button, { label: 'Copy Image Url', onclick: copyImage }),
+    H(Button, { label: 'Copy Meta Tag', onclick: copyMetaTag }),
+    H(
+      'a',
+      { className: 'download-image', href, download: 'og-image' },
+      H(Button, {
+        label: 'Download Image',
+      })
+    )
+  )
+}
+
 interface FieldProps {
   label: string
   input: any
@@ -254,6 +276,36 @@ const App = (_: any, state: AppState, setState: SetState) => {
 
     setState({ ...newState, loading: true })
   }
+
+  const copyImageURL = (e: Event) => {
+    e.preventDefault()
+    const success = copee.toClipboard(url.href)
+    if (success) {
+      setState({
+        showToast: true,
+        messageToast: 'Copied image URL to clipboard',
+      })
+      setTimeout(() => setState({ showToast: false }), 3000)
+    } else {
+      window.open(url.href, '_blank')
+    }
+    return false
+  }
+
+  const copyMetaTag = (e: Event) => {
+    e.preventDefault()
+    const html = `<meta property="og:image" content="${url.href}" />`
+    const success = copee.toClipboard(html)
+    if (success) {
+      setState({
+        showToast: true,
+        messageToast: 'Copied Meta tag to clipboard',
+      })
+      setTimeout(() => setState({ showToast: false }), 3000)
+    }
+    return false
+  }
+
   const {
     fileType = 'png',
     fontSize = '100px',
@@ -435,6 +487,11 @@ const App = (_: any, state: AppState, setState: SetState) => {
               setLoadingState({ images: [...images, nextImage] })
             },
           }),
+        }),
+        H(ActionButtons, {
+          href: url.href,
+          copyImage: copyImageURL,
+          copyMetaTag: copyMetaTag,
         })
       )
     ),
@@ -449,20 +506,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
           setState({ showToast: true, messageToast: 'Oops, an error occurred' })
           setTimeout(() => setState({ showToast: false }), 2000)
         },
-        onclick: (e: Event) => {
-          e.preventDefault()
-          const success = copee.toClipboard(url.href)
-          if (success) {
-            setState({
-              showToast: true,
-              messageToast: 'Copied image URL to clipboard',
-            })
-            setTimeout(() => setState({ showToast: false }), 3000)
-          } else {
-            window.open(url.href, '_blank')
-          }
-          return false
-        },
+        onclick: (e: Event) => copyImageURL(e),
       })
     ),
     H(Toast, {
