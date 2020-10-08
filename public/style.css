@@ -167,6 +167,14 @@ label {
   align-items: center;
 }
 
+.action-buttons > button {
+  margin-right: 10px;
+}
+
+.download-image:hover {
+  text-decoration: none;
+}
+
 .toast-area {
   position: fixed;
   bottom: 10px;
