@@ -294,7 +294,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
 
   const copyMetaTag = (e: Event) => {
     e.preventDefault()
-    const html = `<meta property="og:image" content=${url.href}/>`
+    const html = `<meta property="og:image" content="${url.href}" />`
     const success = copee.toClipboard(html)
     if (success) {
       setState({
