@@ -185,7 +185,7 @@ label {
 }
 
 .toast-outer {
-  width: 420px;
+  width: 320px;
   height: 72px;
   position: absolute;
   bottom: 0;
@@ -197,9 +197,9 @@ label {
 }
 
 .toast-inner {
-  width: 420px;
-  background: black;
-  color: white;
+  width: 320px;
+  background: #fff;
+  color: #000;
   border: 0;
   border-radius: 5px;
   height: 60px;
