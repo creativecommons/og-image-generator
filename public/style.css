@@ -113,6 +113,10 @@ button:hover {
   width: 100px;
 }
 
+.select-wrapper.small select {
+  padding-right: 21px;
+}
+
 .select-arrow {
   border-left: 1px solid #eaeaea;
   background: #fff;
