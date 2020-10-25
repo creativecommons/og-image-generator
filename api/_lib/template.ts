@@ -1,9 +1,15 @@
+import { readFileSync } from 'fs';
 import marked from 'marked'
 import { sanitizeHtml } from './sanitizer'
 import { ParsedRequest } from './types'
 const twemoji = require('twemoji')
 const twOptions = { folder: 'svg', ext: '.svg' }
 const emojify = (text: string) => twemoji.parse(text, twOptions)
+
+const sourceRglr = readFileSync(`${__dirname}/../_fonts/SourceSansPro-Regular.woff2`).toString('base64');
+const sourceBold = readFileSync(`${__dirname}/../_fonts/SourceSansPro-Bold.woff2`).toString('base64');
+const robotoRglr = readFileSync(`${__dirname}/../_fonts/RobotoCondensed-Regular.woff2`).toString('base64');
+const robotoBold = readFileSync(`${__dirname}/../_fonts/RobotoCondensed-Bold.woff2`).toString('base64');
 
 function getCss(theme: string, fontSize: string) {
   let background = 'white'
@@ -16,6 +22,34 @@ function getCss(theme: string, fontSize: string) {
     radial = 'dimgray'
   }
   return `
+    @font-face {
+        font-family: 'Source Sans Pro';
+        font-style:  normal;
+        font-weight: normal;
+        src: url(data:font/woff2;charset=utf-8;base64,${sourceRglr}) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Source Sans Pro';
+        font-style:  normal;
+        font-weight: bold;
+        src: url(data:font/woff2;charset=utf-8;base64,${sourceBold}) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style:  normal;
+        font-weight: normal;
+        src: url(data:font/woff2;charset=utf-8;base64,${robotoRglr}) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style:  normal;
+        font-weight: bold;
+        src: url(data:font/woff2;charset=utf-8;base64,${robotoBold}) format('woff2');
+    }
+
     body {
         background: ${background};
         background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
