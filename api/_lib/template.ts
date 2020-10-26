@@ -11,7 +11,7 @@ const sourceBold = readFileSync(`${__dirname}/../_fonts/SourceSansPro-Bold.woff2
 const robotoRglr = readFileSync(`${__dirname}/../_fonts/RobotoCondensed-Regular.woff2`).toString('base64');
 const robotoBold = readFileSync(`${__dirname}/../_fonts/RobotoCondensed-Bold.woff2`).toString('base64');
 
-function getCss(theme: string, fontSize: string) {
+function getCss(theme: string, fontFamily: string, fontSize: string) {
   let background = 'white'
   let foreground = 'black'
   let radial = 'lightgray'
@@ -107,7 +107,7 @@ function getCss(theme: string, fontSize: string) {
     }
 
     .heading {
-        font-family: 'Inter', sans-serif;
+        font-family: '${sanitizeHtml(fontFamily)}', sans-serif;
         font-size: ${sanitizeHtml(fontSize)};
         font-style: normal;
         color: ${foreground};
@@ -116,14 +116,14 @@ function getCss(theme: string, fontSize: string) {
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { text, theme, md, fontSize, images, widths, heights } = parsedReq
+  const { text, theme, md, fontFamily, fontSize, images, widths, heights } = parsedReq
   return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss(theme, fontSize)}
+        ${getCss(theme, fontFamily, fontSize)}
     </style>
     <body>
         <div>
