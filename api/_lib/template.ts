@@ -15,12 +15,23 @@ function getCss(theme: string, fontFamily: string, fontSize: string) {
   let background = 'white'
   let foreground = 'black'
   let radial = 'lightgray'
-
+  
   if (theme === 'dark') {
     background = 'black'
     foreground = 'white'
     radial = 'dimgray'
   }
+
+  let headingStyles = `
+        font-weight: normal;
+        text-transform: none;`
+
+  if (fontFamily === 'Roboto Condensed') {
+    headingStyles = `
+        font-weight: bold;
+        text-transform: uppercase;`
+  }
+
   return `
     @font-face {
         font-family: 'Source Sans Pro';
@@ -109,9 +120,10 @@ function getCss(theme: string, fontFamily: string, fontSize: string) {
     .heading {
         font-family: '${sanitizeHtml(fontFamily)}', sans-serif;
         font-size: ${sanitizeHtml(fontSize)};
-        font-style: normal;
         color: ${foreground};
-        line-height: 1.8;
+        ${headingStyles}
+        line-height: 1.3;
+        letter-spacing: 0.02rem;
     }`
 }
 
