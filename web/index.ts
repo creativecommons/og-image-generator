@@ -159,6 +159,11 @@ const fileTypeOptions: DropdownOption[] = [
   { text: 'JPEG', value: 'jpeg' },
 ]
 
+const fontFamilyOptions: DropdownOption[] = [
+  { text: 'Source Sans Pro', value: 'source-sans-pro'},
+  { text: 'Roboto Condensed', value: 'roboto-condensed'},
+]
+
 const fontSizeOptions: DropdownOption[] = Array.from({ length: 10 })
   .map((_, i) => i * 25)
   .filter((n) => n > 0)
@@ -308,6 +313,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
 
   const {
     fileType = 'png',
+    fontFamily = 'source-sans-pro',
     fontSize = '100px',
     theme = 'light',
     md = true,
@@ -328,6 +334,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   url.pathname = `${encodeURIComponent(text)}.${fileType}`
   url.searchParams.append('theme', theme)
   url.searchParams.append('md', mdValue)
+  url.searchParams.append('fontFamily', fontFamily)
   url.searchParams.append('fontSize', fontSize)
 
   for (let image of images) {
@@ -367,6 +374,14 @@ const App = (_: any, state: AppState, setState: SetState) => {
             options: fileTypeOptions,
             value: fileType,
             onchange: (val: FileType) => setLoadingState({ fileType: val }),
+          }),
+        }),
+        H(Field, {
+          label: 'Font Family',
+          input: H(Dropdown, {
+            options: fontFamilyOptions,
+            value: fontFamily,
+            onchange: (val: string) => setLoadingState({ fontFamily: val }),
           }),
         }),
         H(Field, {

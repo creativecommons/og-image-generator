@@ -1,3 +1,4 @@
+import { readFileSync } from 'fs';
 import marked from 'marked'
 import { sanitizeHtml } from './sanitizer'
 import { ParsedRequest } from './types'
@@ -5,17 +6,61 @@ const twemoji = require('twemoji')
 const twOptions = { folder: 'svg', ext: '.svg' }
 const emojify = (text: string) => twemoji.parse(text, twOptions)
 
-function getCss(theme: string, fontSize: string) {
+const sourceRglr = readFileSync(`${__dirname}/../_fonts/SourceSansPro-Regular.woff2`).toString('base64');
+const sourceBold = readFileSync(`${__dirname}/../_fonts/SourceSansPro-Bold.woff2`).toString('base64');
+const robotoRglr = readFileSync(`${__dirname}/../_fonts/RobotoCondensed-Regular.woff2`).toString('base64');
+const robotoBold = readFileSync(`${__dirname}/../_fonts/RobotoCondensed-Bold.woff2`).toString('base64');
+
+function getCss(theme: string, fontFamily: string, fontSize: string) {
   let background = 'white'
   let foreground = 'black'
   let radial = 'lightgray'
-
+  
   if (theme === 'dark') {
     background = 'black'
     foreground = 'white'
     radial = 'dimgray'
   }
+
+  let headingStyles = `
+        font-weight: normal;
+        text-transform: none;`
+
+  if (fontFamily === 'Roboto Condensed') {
+    headingStyles = `
+        font-weight: bold;
+        text-transform: uppercase;`
+  }
+
   return `
+    @font-face {
+        font-family: 'Source Sans Pro';
+        font-style:  normal;
+        font-weight: normal;
+        src: url(data:font/woff2;charset=utf-8;base64,${sourceRglr}) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Source Sans Pro';
+        font-style:  normal;
+        font-weight: bold;
+        src: url(data:font/woff2;charset=utf-8;base64,${sourceBold}) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style:  normal;
+        font-weight: normal;
+        src: url(data:font/woff2;charset=utf-8;base64,${robotoRglr}) format('woff2');
+    }
+
+    @font-face {
+        font-family: 'Roboto Condensed';
+        font-style:  normal;
+        font-weight: bold;
+        src: url(data:font/woff2;charset=utf-8;base64,${robotoBold}) format('woff2');
+    }
+
     body {
         background: ${background};
         background-image: radial-gradient(circle at 25px 25px, ${radial} 2%, transparent 0%), radial-gradient(circle at 75px 75px, ${radial} 2%, transparent 0%);
@@ -73,23 +118,24 @@ function getCss(theme: string, fontSize: string) {
     }
 
     .heading {
-        font-family: 'Inter', sans-serif;
+        font-family: '${sanitizeHtml(fontFamily)}', sans-serif;
         font-size: ${sanitizeHtml(fontSize)};
-        font-style: normal;
         color: ${foreground};
-        line-height: 1.8;
+        ${headingStyles}
+        line-height: 1.3;
+        letter-spacing: 0.02rem;
     }`
 }
 
 export function getHtml(parsedReq: ParsedRequest) {
-  const { text, theme, md, fontSize, images, widths, heights } = parsedReq
+  const { text, theme, md, fontFamily, fontSize, images, widths, heights } = parsedReq
   return `<!DOCTYPE html>
 <html>
     <meta charset="utf-8">
     <title>Generated Image</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        ${getCss(theme, fontSize)}
+        ${getCss(theme, fontFamily, fontSize)}
     </style>
     <body>
         <div>
