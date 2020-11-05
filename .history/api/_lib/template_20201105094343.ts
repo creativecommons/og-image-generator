@@ -74,7 +74,7 @@ function getCss(theme: string, fontFamily: string, fontSize: string) {
     body {
         background: ${background};
         background-image: url(${bgImage});
-        background-size: 300px 300px;
+        background-size: 100px 100px;
         height: 100vh;
         display: flex;
         text-align: center;
