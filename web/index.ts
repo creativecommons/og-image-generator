@@ -337,15 +337,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
   url.searchParams.append('fontFamily', fontFamily)
   url.searchParams.append('fontSize', fontSize)
 
-  for (let image of images) {
-    url.searchParams.append('images', image)
-  }
-  for (let width of widths) {
-    url.searchParams.append('widths', width)
-  }
-  for (let height of heights) {
-    url.searchParams.append('heights', height)
-  }
+  url.searchParams.append(
+    'imageObj',
+    JSON.stringify({ images: images, widths: widths, heights: heights })
+  )
 
   return H(
     'div',
