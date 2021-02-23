@@ -80,6 +80,22 @@ const TextInput = ({ value, oninput }: TextInputProps) => {
   )
 }
 
+// const TextArea = ({ value, oninput }: TextInputProps) => {
+//   return H(
+//     'div',
+//     { className: 'input-outer-wrapper' },
+//     H(
+//       'div',
+//       { className: 'input-inner-wrapper' },
+//       H('textarea', {
+//         type: 'text',
+//         value,
+//         oninput: (e: any) => oninput(e.target.value),
+//       })
+//     )
+//   )
+// }
+
 interface ButtonProps {
   label: string
   onclick: () => void
@@ -320,6 +336,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   const {
     fileType = 'png',
     fontFamily = 'source-sans-pro',
+    imageUrl = '',
     fontSize = '100px',
     theme = 'light',
     backgroundType = 'pattern',
@@ -341,8 +358,9 @@ const App = (_: any, state: AppState, setState: SetState) => {
   url.pathname = `${encodeURIComponent(text)}.${fileType}`
   url.searchParams.append('theme', theme)
   url.searchParams.append('md', mdValue)
-  url.searchParams.append('bg', backgroundType)
+  url.searchParams.append('bgtype', backgroundType)
   url.searchParams.append('fontFamily', fontFamily)
+  url.searchParams.append('imageUrl', imageUrl)
   url.searchParams.append('fontSize', fontSize)
 
   for (let image of images) {
@@ -376,7 +394,6 @@ const App = (_: any, state: AppState, setState: SetState) => {
             },
           }),
         }),
-
         H(Field, {
           label: 'File Type',
           input: H(Dropdown, {
@@ -435,14 +452,26 @@ const App = (_: any, state: AppState, setState: SetState) => {
         H(Field, {
           label: 'Image Url',
           input: H(TextInput, {
-            value: text,
+            value: imageUrl,
             oninput: (val: string) => {
               console.log('oninput ' + val)
               console.log('url' + url)
-              setLoadingState({ text: val, overrideUrl: url })
+              setLoadingState({ imageUrl: val, overrideUrl: url })
             },
           }),
         }),
+
+        // H(Field, {
+        //   label: 'Attribution',
+        //   input: H(TextArea, {
+        //     value: text,
+        //     oninput: (val: string) => {
+        //       console.log('oninput ' + val)
+        //       console.log('url' + url)
+        //       setLoadingState({ imageurl: val, overrideUrl: url })
+        //     },
+        //   }),
+        // }),
 
         H(Field, {
           label: 'Image 1',

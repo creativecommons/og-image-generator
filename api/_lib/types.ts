@@ -9,6 +9,7 @@ export interface ParsedRequest {
     backgroundType: BackgroundType;
     md: boolean;
     fontFamily: string;
+    imageUrl: string;
     fontSize: string;
     images: string[];
     widths: string[];
