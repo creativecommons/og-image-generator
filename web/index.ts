@@ -81,19 +81,11 @@ const TextInput = ({ value, oninput }: TextInputProps) => {
 }
 
 const TextArea = ({ value, oninput }: TextInputProps) => {
-  return H(
-    'div',
-    { className: 'input-outer-wrapper' },
-    H(
-      'div',
-      { className: 'input-inner-wrapper' },
-      H('textarea', {
+  return H('textarea', {
         type: 'text',
         value,
         oninput: (e: any) => oninput(e.target.value),
       })
-      ),
-  )
 }
 
 interface ButtonProps {
