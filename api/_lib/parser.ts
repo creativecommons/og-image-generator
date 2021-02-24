@@ -7,7 +7,7 @@ export function parseRequest(req: IncomingMessage) {
   const { pathname, query } = parse(req.url || '/', true)
   // @todo: Switch to param stuctucture here: https://github.com/spinks/og-image/commit/45439b73b3a5156faf9f6757fc4f208b230f5d9a
   // to bypass facebook issue (facebook strips query params that appear to be urls)
-  const { fontFamily, fontSize, images, widths, heights, theme, backgroundType, imageUrl,  md } = query || {}
+  const { fontFamily, fontSize, images, widths, heights, theme, backgroundType, imageUrl, attribution,  md } = query || {}
 
   if (Array.isArray(fontFamily)) {
     throw new Error('Expected a single fontFamily')
@@ -39,10 +39,11 @@ export function parseRequest(req: IncomingMessage) {
     fileType: extension === 'jpeg' ? extension : 'png',
     text: decodeURIComponent(text),
     theme: theme === 'dark' ? 'dark' : 'light',
-    backgroundType: backgroundType === 'image' ? 'image' : 'pattern',
     md: md === '1' || md === 'true',
     fontFamily: fontFamily === 'roboto-condensed' ? 'Roboto Condensed' : 'Source Sans Pro',
-    imageUrl: imageUrl === ''? '': '',
+    backgroundType: backgroundType === 'image' ? 'image' : 'pattern',
+    imageUrl: imageUrl === undefined ? '': imageUrl.toString(),
+    attribution: attribution === undefined ? '': attribution.toString(),
     fontSize: fontSize || '96px',
     images: getArray(images),
     widths: getArray(widths),
@@ -52,7 +53,9 @@ export function parseRequest(req: IncomingMessage) {
     parsedRequest.images,
     parsedRequest.theme
   )
-  console.log('parseRequest:' +  parsedRequest.text)
+  console.log('parsedRequest.backgroundType: ' +  parsedRequest.backgroundType)
+  console.log('parsedRequest.attribution: ' +  parsedRequest.attribution)
+  console.log('parsedRequest.imageUrl: ' +  parsedRequest.imageUrl)
   return parsedRequest
 }
 

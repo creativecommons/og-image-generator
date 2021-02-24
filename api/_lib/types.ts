@@ -6,10 +6,11 @@ export interface ParsedRequest {
     fileType: FileType;
     text: string;
     theme: Theme;
-    backgroundType: BackgroundType;
     md: boolean;
     fontFamily: string;
+    backgroundType: BackgroundType;
     imageUrl: string;
+    attribution: string;
     fontSize: string;
     images: string[];
     widths: string[];
