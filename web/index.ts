@@ -351,7 +351,7 @@ const App = (_: any, state: AppState, setState: SetState) => {
   url.pathname = `${encodeURIComponent(text)}.${fileType}`
   url.searchParams.append('theme', theme)
   url.searchParams.append('md', mdValue)
-  url.searchParams.append('bgtype', backgroundType)
+  url.searchParams.append('backgroundType', backgroundType)
   url.searchParams.append('fontFamily', fontFamily)
   url.searchParams.append('imageUrl', imageUrl)
   url.searchParams.append('attribution', attribution)
