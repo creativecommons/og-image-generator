@@ -1,4 +1,4 @@
-import { ParsedRequest, Theme, FileType } from '../api/_lib/types'
+import { ParsedRequest, Theme, BackgroundType, FileType } from '../api/_lib/types'
 const { H, R, copee } = window as any
 let timeout = -1
 
@@ -25,6 +25,7 @@ const ImagePreview = ({
   return H(
     'a',
     { className: 'image-wrapper', href: src, onclick },
+    H('div', {className: 'image-title'}, 'Text Here (Pending)'),
     H('img', { src, onload, onerror, style, title })
   )
 }
@@ -77,6 +78,14 @@ const TextInput = ({ value, oninput }: TextInputProps) => {
       })
     )
   )
+}
+
+const TextArea = ({ value, oninput }: TextInputProps) => {
+  return H('textarea', {
+        type: 'text',
+        value,
+        oninput: (e: any) => oninput(e.target.value),
+      })
 }
 
 interface ButtonProps {
@@ -172,6 +181,11 @@ const fontSizeOptions: DropdownOption[] = Array.from({ length: 10 })
 const markdownOptions: DropdownOption[] = [
   { text: 'Plain Text', value: '0' },
   { text: 'Markdown', value: '1' },
+]
+
+const backgroundOptions: DropdownOption[] = [
+  { text: 'Pattern', value: 'pattern' },
+  { text: 'Image', value: 'image' },
 ]
 
 const imageLightOptions: DropdownOption[] = [
@@ -314,8 +328,11 @@ const App = (_: any, state: AppState, setState: SetState) => {
   const {
     fileType = 'png',
     fontFamily = 'source-sans-pro',
+    imageUrl = '',
+    attribution = '',
     fontSize = '100px',
     theme = 'light',
+    backgroundType = 'pattern',
     md = true,
     text = 'Introducing **New** Feature',
     images = [imageLightOptions[0].value],
@@ -334,7 +351,10 @@ const App = (_: any, state: AppState, setState: SetState) => {
   url.pathname = `${encodeURIComponent(text)}.${fileType}`
   url.searchParams.append('theme', theme)
   url.searchParams.append('md', mdValue)
+  url.searchParams.append('backgroundType', backgroundType)
   url.searchParams.append('fontFamily', fontFamily)
+  url.searchParams.append('imageUrl', imageUrl)
+  url.searchParams.append('attribution', attribution)
   url.searchParams.append('fontSize', fontSize)
 
   for (let image of images) {
@@ -410,6 +430,49 @@ const App = (_: any, state: AppState, setState: SetState) => {
             },
           }),
         }),
+
+        H(Field, {
+          label: 'Background Type',
+          input: H(Dropdown, {
+            options: backgroundOptions,
+            value: backgroundType,
+            onchange: (val: BackgroundType) => {
+              setLoadingState({ backgroundType: val})
+            },
+          }),
+        }),
+
+        H(Field, {
+          label: 'Image Url',
+          input: H(TextInput, {
+            value: imageUrl,
+            oninput: (val: string) => {
+              console.log('oninput ' + val)
+              console.log('url' + url)
+              setLoadingState({ imageUrl: val, overrideUrl: url })
+            },
+          }),
+        }),
+
+        H(Field, {
+          label: 'Attribution',
+          input: H(TextArea, {
+            value: attribution,
+            oninput: (val: string) => {
+              console.log('oninput ' + val)
+              console.log('url' + url)
+              setLoadingState({ attribution: val, overrideUrl: url })
+            },
+          }),
+          info: 
+          H(
+            'p',
+            {className: 'p'}, 'Info: shshshhsshshhshshidagygoigyg'
+            ),
+        }),
+
+
+
         H(Field, {
           label: 'Image 1',
           input: H(
