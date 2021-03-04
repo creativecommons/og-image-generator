@@ -5,10 +5,11 @@ import { ParsedRequest, Theme } from './types'
 export function parseRequest(req: IncomingMessage) {
   console.log('HTTP ' + req.url)
   const { pathname, query } = parse(req.url || '/', true)
-  // @todo: Switch to param stuctucture here: https://github.com/spinks/og-image/commit/45439b73b3a5156faf9f6757fc4f208b230f5d9a
-  // to bypass facebook issue (facebook strips query params that appear to be urls)
-  const { fontFamily, fontSize, images, widths, heights, theme, md } = query || {}
+  const { fontFamily, fontSize, images, widths, heights, theme, md, imageObj } = query || {}
 
+  if (Array.isArray(imageObj)) {
+    throw new Error('Expected a single image Object');
+  }
   if (Array.isArray(fontFamily)) {
     throw new Error('Expected a single fontFamily')
   }
@@ -17,6 +18,14 @@ export function parseRequest(req: IncomingMessage) {
   }
   if (Array.isArray(theme)) {
     throw new Error('Expected a single theme')
+  }
+
+  let parsedImages = JSON.parse(imageObj || '{}');
+  if (Object.keys(parsedImages).length === 0) {
+    console.log('Legacy image format');
+    parsedImages.images = getArray(images);
+    parsedImages.widths = getArray(widths);
+    parsedImages.heights = getArray(heights);
   }
 
   const arr = (pathname || '/').slice(1).split('.')
@@ -38,9 +47,9 @@ export function parseRequest(req: IncomingMessage) {
     md: md === '1' || md === 'true',
     fontFamily: fontFamily === 'roboto-condensed' ? 'Roboto Condensed' : 'Source Sans Pro',
     fontSize: fontSize || '96px',
-    images: getArray(images),
-    widths: getArray(widths),
-    heights: getArray(heights),
+    images: parsedImages.images,
+    widths: parsedImages.widths,
+    heights: parsedImages.heights,
   }
   parsedRequest.images = getDefaultImages(
     parsedRequest.images,
